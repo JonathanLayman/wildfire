@@ -1,3 +1,3 @@
-paper_key = "PKLTBJMC6CUUSBHVMDMT"
+paper_key = "Add paper key here"
 paper_base = "https://paper-api.alpaca.markets"
-paper_secret = "8Dul1sWik5Lgmw5Ib92VJp2SXGNkZ7xQuB1PmZWq"
+paper_secret = "Add paper secret here"
