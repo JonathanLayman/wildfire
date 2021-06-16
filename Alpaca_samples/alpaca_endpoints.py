@@ -37,8 +37,8 @@ def buy_or_sell(asset, dollars, amount, side, _type="market", time_in_force="day
 
 # get info on assets
 def get_info_on_assets():
-    api.list_assets()
-    api.list_positions()
+    # print(api.list_assets())
+    print(api.list_positions()[1])
 
 
 # sym = "QQQ"
@@ -55,4 +55,4 @@ def get_info_on_assets():
 # print(f"Buy $100 of {sym}")
 # buy_or_sell(asset=sym, dollars=True, amount=100, side='buy')
 # print(f"list assets")
-# get_info_on_assets()
+get_info_on_assets()
