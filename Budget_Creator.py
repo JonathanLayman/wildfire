@@ -114,16 +114,18 @@ class EmergencyFund(BudgetCategory):
         diff = round(self.minimum - self.value, 2)
         # if there is a positive difference that means that more money needs to be allocated
         if diff > 0:
+            print(f"Total needed to reach goal ${diff}, cash available {self.cash}")
             # if we have the cash in this budget to fill the diff we set that as cash needed
             if self.cash >= diff:
                 self.cash_needed = diff
             # if we don't have enough cash, we allocate all that we do have
             else:
                 self.cash_needed = self.cash
+            print(f"${self.cash_needed} to allocate to this budget")
         # if we have equal or greater than the goal amount don't spend cash, send to other accounts
         else:
             self.cash_needed = 0
-            # create ability to send cash to other accounts here
+            print("No additional funding needed, sending excess to main app")
 
     def strategy(self):
         """
@@ -136,6 +138,13 @@ class EmergencyFund(BudgetCategory):
         # we need a way to see growth
         # Perhaps grab api data from stock over last 30 days and combine results
         pass
+
+    def apply_strategy(self):
+        if self.cash_needed > 0:
+            print("Buy assets equalling cash needed")
+        else:
+            print("send cash back go main app")
+            self.unallocate_assets_cash(cash=self.cash)
 
 
 # with open("Budgets/default.json", "r") as f:

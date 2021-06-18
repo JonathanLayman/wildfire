@@ -47,12 +47,13 @@ class App:
         with open(self.file, "r") as f:
             budget_data = json.load(f)
         for budget in budget_data:
+            b = None
             if budget_data[budget]["Type"] == "Emergency Fund":
                 b = Budget_Creator.EmergencyFund(self.broker, app=self, minimum=1000, **budget_data[budget])
-            elif budget_data[budget]["Type"] == "Low Income":
-                print("Not yet programmed")
-                break
-            self.all_budgets.append(b)
+            else:
+                print(f"{budget_data[budget]['Type']} not yet implemented")
+            if b is not None:
+                self.all_budgets.append(b)
 
 
 if __name__ == "__main__":
@@ -60,4 +61,6 @@ if __name__ == "__main__":
     # print(a.allocated_cash)
     # print(a.allocated_assets)
     # print(a.unallocated_assets)
-    print(a.all_budgets[0].assets)
+    # print(a.all_budgets[0].assets)
+    a.all_budgets[0].calculate_growth()
+    # print(a.all_budgets[0].cash_needed)
