@@ -4,7 +4,7 @@ budget = {
     "EmergencySavings": {
         "Name": "EmergencySavings",
         "Type": "Emergency Fund",
-        "Cash": 500,
+        "Cash": 0,
         "Assets": [
             {
                 "Symbol": "QQQ",
@@ -19,7 +19,7 @@ budget = {
     "Books": {
         "Name": "Books",
         "Type": "Low Income",
-        "Cash": 500,
+        "Cash": 0,
         "Assets": [
             {
                 "Symbol": "QQQ",

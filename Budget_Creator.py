@@ -21,6 +21,10 @@ class BudgetCategory:
         self.value = 0
 
         self.get_value()
+        allocate_dict = {}
+        for asset in self.assets:
+            allocate_dict[asset["Symbol"]] = asset["Qty"]
+        self.allocate_assets_cash(cash=self.cash, assets=allocate_dict)
 
     def get_value(self):
         """
@@ -48,9 +52,13 @@ class BudgetCategory:
         """
         self.app.allocated_cash += cash
         self.app.unallocated_cash -= cash
+        if self.app.unallocated_cash < 0:
+            raise Exception("Cash Less than zero")
         if assets:
             for asset in assets:
                 self.app.unallocated_assets[asset] -= assets[asset]
+                if self.app.unallocated_assets[asset] < 0:
+                    raise Exception("Assets less than 0")
                 self.app.allocated_assets[asset] += assets[asset]
 
     def unallocate_assets_cash(self, cash=0, assets=None):
@@ -61,11 +69,15 @@ class BudgetCategory:
         :return:
         """
         self.app.allocated_cash -= cash
+        if self.app.allocated_cash < 0:
+            raise Exception("Cash Less than zero")
         self.app.unallocated_cash += cash
         if assets:
             for asset in assets:
                 self.app.unallocated_assets[asset] += assets[asset]
                 self.app.allocated_assets[asset] -= assets[asset]
+                if self.app.allocated_assets[asset] < 0:
+                    raise Exception("Assets Less than zero")
 
     def strategy(self):
         """

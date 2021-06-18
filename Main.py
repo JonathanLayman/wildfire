@@ -24,7 +24,8 @@ class App:
         self.cash = self.broker.cash
         self.allocated_cash = 0
         self.unallocated_cash = self.cash
-        
+        self.all_budgets = []
+
         # print(self.assets, self.unallocated_assets)
         # self.unallocated_assets["QQQ"] += 10
         # print(self.assets, self.unallocated_assets)
@@ -45,14 +46,18 @@ class App:
     def read_budget_file(self):
         with open(self.file, "r") as f:
             budget_data = json.load(f)
-        budget = Budget_Creator.EmergencyFund(self.broker, app=self, minimum=1000, **budget_data["EmergencySavings"])
-        # print(budget.value)
-        # budget.calculate_growth()
-        print(self.unallocated_cash, self.unallocated_assets)
-        budget.unallocate_assets_cash(cash=10, assets={"QQQ": 1, "QYLG": 20})
-        budget.allocate_assets_cash(cash=10, assets={"QQQ": 1, "QYLG": 20})
-        print(self.unallocated_cash, self.unallocated_assets)
+        for budget in budget_data:
+            if budget_data[budget]["Type"] == "Emergency Fund":
+                b = Budget_Creator.EmergencyFund(self.broker, app=self, minimum=1000, **budget_data[budget])
+            elif budget_data[budget]["Type"] == "Low Income":
+                print("Not yet programmed")
+                break
+            self.all_budgets.append(b)
 
 
 if __name__ == "__main__":
     a = App("Budgets/default.json")
+    # print(a.allocated_cash)
+    # print(a.allocated_assets)
+    # print(a.unallocated_assets)
+    print(a.all_budgets[0].assets)
