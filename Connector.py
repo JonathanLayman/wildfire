@@ -4,7 +4,6 @@ import secrets
 import alpaca_trade_api as tradeapi
 from math import floor
 
-
 """
 The purpose of this file is to create a common connection api that can connect to multiple brokers
 """
@@ -16,7 +15,7 @@ broker_type = "alpaca"
 class Broker:
     def __init__(self):
         self.cash = 0
-        self.assets = []
+        self.assets = {}
         self.broker_vendor = "Default"
 
 
@@ -46,7 +45,7 @@ class AlpacaBroker(Broker):
             print(f"Order submitted for {shares} of {ticker} -- not fractionable")
 
     def sell_stock(self, ticker, amount, close=False):
-        #check position and close if appropriate
+        # check position and close if appropriate
         try:
             position = float(self.api.get_position(ticker).qty)
         except alpaca_trade_api.rest.APIError:
@@ -64,7 +63,7 @@ class AlpacaBroker(Broker):
             print("Amount invalid")
 
     def sell_dollar(self, ticker, amount, close=False):
-        #check position and close if appropriate
+        # check position and close if appropriate
         try:
             position = float(self.api.get_position(ticker).market_value)
         except alpaca_trade_api.rest.APIError:
@@ -86,9 +85,10 @@ class AlpacaBroker(Broker):
         # print(self.cash)
 
     def get_assets(self):
-        self.assets = []
+        self.assets = {}
         for symbol in self.api.list_positions():
-            self.assets.append(symbol.symbol)
+            # print(symbol)
+            self.assets[symbol.symbol] = float(symbol.qty)
         # print(self.assets)
 
     def get_stock_info(self, ticker):
@@ -111,8 +111,7 @@ class AlpacaBroker(Broker):
 
         return asset_dict
 
-
-broker = AlpacaBroker()
+# broker = AlpacaBroker()
 # print(broker.get_stock_info("AAPL"))
 # print(broker.get_stock_info("AAPL")['tradable'] is True)
 # broker.sell_dollar("QQQ", 100000000)

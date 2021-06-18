@@ -1,5 +1,5 @@
 import json
-from Connector import broker
+# from Connector import broker
 
 # print(broker.assets)
 
@@ -11,8 +11,9 @@ class BudgetCategory:
     - The dataframe will be backed up to a file
 
     """
-    def __init__(self, broker, **kwargs):
+    def __init__(self, broker, app, **kwargs):
         self.broker = broker
+        self.app = app
         self.name = kwargs["Name"]
         self.type = kwargs["Type"]
         self.assets = kwargs["Assets"]
@@ -38,6 +39,34 @@ class BudgetCategory:
             # print(f"{asset['Symbol']} - {asset_value}")
         self.value = round(value, 2)
 
+    def allocate_assets_cash(self, cash=0, assets=None):
+        """
+        This is used to change the allocated_assets and cash functions in the main app
+        :param cash:
+        :param assets:
+        :return:
+        """
+        self.app.allocated_cash += cash
+        self.app.unallocated_cash -= cash
+        if assets:
+            for asset in assets:
+                self.app.unallocated_assets[asset] -= assets[asset]
+                self.app.allocated_assets[asset] += assets[asset]
+
+    def unallocate_assets_cash(self, cash=0, assets=None):
+        """
+        This is used to change the unallocated_assets and cash functions in the main app
+        :param cash:
+        :param assets:
+        :return:
+        """
+        self.app.allocated_cash -= cash
+        self.app.unallocated_cash += cash
+        if assets:
+            for asset in assets:
+                self.app.unallocated_assets[asset] += assets[asset]
+                self.app.allocated_assets[asset] -= assets[asset]
+
     def strategy(self):
         """
         This will create the basis on how the app tries to manage this budget
@@ -57,8 +86,8 @@ class BudgetCategory:
 
 
 class EmergencyFund(BudgetCategory):
-    def __init__(self, broker, minimum, growth=0.02, **kwargs):
-        super().__init__(broker, **kwargs)
+    def __init__(self, broker, app, minimum, growth=0.02, **kwargs):
+        super().__init__(broker, app, **kwargs)
         self.minimum = minimum
         self.growth = growth
         self.cash_needed = 0.0
@@ -84,16 +113,6 @@ class EmergencyFund(BudgetCategory):
             self.cash_needed = 0
             # create ability to send cash to other accounts here
 
-        # else:
-        #     # Calculate if target is on track to match inflation estimated at 2% per year
-        #     growth_target = round(self.minimum + (self.minimum * (self.growth / 12)), 2)
-        #     print(growth_target)
-        #     if self.value > growth_target:
-        #         print(f"current value {self.value}, target {growth_target}, no funds need to be committed")
-        #     else:
-        #         diff = round(growth_target - self.value, 2)
-        #         print(f"current value {self.value}, target {growth_target}, need to add {diff}")
-
     def strategy(self):
         """
         Goals:
@@ -107,8 +126,8 @@ class EmergencyFund(BudgetCategory):
         pass
 
 
-with open("Budgets/default.json", "r") as f:
-    budget_data = json.load(f)
-budget = EmergencyFund(broker, minimum=1000, **budget_data["EmergencySavings"])
-print(budget.value)
-budget.calculate_growth()
+# with open("Budgets/default.json", "r") as f:
+#     budget_data = json.load(f)
+# budget = EmergencyFund(broker, minimum=1000, **budget_data["EmergencySavings"])
+# print(budget.value)
+# budget.calculate_growth()
